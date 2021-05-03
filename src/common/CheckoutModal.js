@@ -40,6 +40,16 @@ function CheckoutModal(props) {
 	}
 
 
+	function clearCart () {
+		let cd = {
+			cartCounter: 0,
+			items: []
+		}
+		setNewProducts({})
+		localStorage.setItem("cartDetails", JSON.stringify(cd))
+		props.refreshCart()
+	}
+
 	function incrementItemCounter (item) {
 		let np = JSON.parse(JSON.stringify(newProducts))
 		np[item.product_id].counter ++
@@ -53,12 +63,25 @@ function CheckoutModal(props) {
 	}
 
 	function decrementItemCounter (item) {
-		newProducts[item.product_id].counter --
+		let np = JSON.parse(JSON.stringify(newProducts))
+		if (np[item.product_id].counter == 1) {
+			delete np[item.product_id]
+		} else {
+			np[item.product_id].counter --
+		}
+		setNewProducts(np)
 
 		let cartDetails = JSON.parse(window.localStorage.getItem("cartDetails"))
 		cartDetails.cartCounter--
-
-		cartDetails.items.push(item)
+		var index = ""
+		for (let i = 0; i< cartDetails.items.length; i++) {
+			if (cartDetails.items[i].product_id == item.product_id) {
+				index = i
+				break
+			}
+		}
+		cartDetails.items.splice(index, 1)
+		window.localStorage.setItem("cartDetails", JSON.stringify(cartDetails))
 		props.refreshCart()
 	}
 
@@ -115,7 +138,8 @@ function CheckoutModal(props) {
 
 			</Modal.Body>
 			<Modal.Footer>
-				<Button block>Checkout</Button>
+				<Button onClick={() => window.alert("Checkout is not implemented.")} block>Checkout</Button>
+				<Button onClick={clearCart} block>Clear</Button>
 			</Modal.Footer>
 		</Modal>
 	);

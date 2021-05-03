@@ -8,7 +8,6 @@ import cart from "../assets/cart.png";
 import MenuPage from "./MenuComponent";
 
 const CategoriesPage = (props) => {
-	console.log(props)
 	let {storeID} = useParams()
 	let [storeCredentials, setStoreCredentials] = useState({})
 	let [storeInfo, setStoreInfo] = useState({})
@@ -42,7 +41,6 @@ const CategoriesPage = (props) => {
 
 		if (isSubCategory) {
 			setActiveSubCategoryID(menuItem.id)
-			console.log(menuItem)
 		} else {
 			if (menuItem && menuItem.child && menuItem.child.length > 0) {
 				setSubCategories(menuItem.child)
@@ -51,13 +49,11 @@ const CategoriesPage = (props) => {
 			}
 			setActiveSubCategoryID("")
 			setActiveMenuID(menuItem.id)
-			console.log(menuItem)
 		}
 
 	}
 
 	function addItemToCart (item) {
-		console.log(item)
 		let cartDetails = JSON.parse(localStorage.getItem('cartDetails'))
 		if (!cartDetails.items) {
 			cartDetails.items = []
@@ -79,6 +75,20 @@ const CategoriesPage = (props) => {
 
 	return (
 		<Container>
+
+			{
+				(!storeCredentials || (!storeCredentials.appSecret && !storeCredentials.appKey)) &&
+				<Row>
+					<Alert variant="danger" style={{width: "100%"}}>
+						<Alert.Heading>Store Not Found!</Alert.Heading>
+						<p>
+							The ID you specified doesn't seem to be a valid store ID.
+						</p>
+					</Alert>
+				</Row>
+
+			}
+
 			{
 				showSuccess ?
 					<Alert variant="success" className="fixed-top" style={{height: "60px", textAlign: "center"}}>
@@ -118,7 +128,6 @@ const CategoriesPage = (props) => {
 
 					{products && products.map((prod, index) => {
 						if (prod.cate_id == activeMenuID || prod.cate_id == activeSubCategoryID) {
-							console.log(prod)
 							return (
 								<ListGroup className="list-prods" key={index}>
 									<ListGroup.Item>
